@@ -22,7 +22,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="TP_logout.php" style="font-size: 1.5rem;">로그아웃</a>
                     </li>
-                    <?php if (isset($_SESSION['user']) && $_SESSION['user']['cno'] == "c0"): ?>
+                    <?php if (htmlspecialchars($_SESSION['user']['cno'] == "c0")): ?>
                         <li class="nav-item">
                             <a class="nav-link" href="TP_logout.php" style="font-size: 1.5rem;">통계</a>
                         </li>

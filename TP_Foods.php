@@ -7,7 +7,11 @@
     // Food 테이블의 데이터를 조회
     $foods = [];
     if ($dbConnectionSuccess) {
-        $sql = "SELECT foodName, price FROM Food";
+        $sql = "SELECT f.foodName, f.price, GROUP_CONCAT(c.categoryName SEPARATOR ', ') AS categories
+                FROM Food f
+                JOIN Contain ct ON f.foodName = ct.foodName
+                JOIN Category c ON ct.categoryName = c.categoryName
+                GROUP BY f.foodName, f.price;";
         $stmt = $pdo->query($sql);
         $foods = $stmt->fetchAll();
     }
@@ -42,6 +46,7 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
+                        <th>카테고리</th>
                         <th>음식 이름</th>
                         <th>가격</th>
                     </tr>
@@ -49,6 +54,7 @@
                 <tbody>
                     <?php foreach ($foods as $food): ?>
                         <tr>
+                            <td><?php echo htmlspecialchars($food['categories']); ?></td>
                             <td><?php echo htmlspecialchars($food['foodName']); ?></td>
                             <td><?php echo htmlspecialchars($food['price']); ?></td>
                         </tr>
