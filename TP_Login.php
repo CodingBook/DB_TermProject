@@ -1,30 +1,31 @@
-<?php  // TP_Login.php
+<?php
+    /* 로그인 페이지 */
 
-session_start();  // 세션 시작
-include 'TP_pdo.php';  // PDO 설정 불러오기
+    session_start();  // 세션 시작
+    include 'TP_pdo.php';  // PDO 설정 불러오기
 
-// 로그인 처리
-$loginError = null;
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $cno = $_POST['cno'];
-    $passwd = $_POST['passwd'];
+    // 로그인 처리
+    $loginError = null;
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $cno = $_POST['cno'];
+        $passwd = $_POST['passwd'];
 
-    // SQL 쿼리 준비 및 실행
-    $sql = "SELECT * FROM Customer WHERE cno = :cno AND passwd = :passwd";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['cno' => $cno, 'passwd' => $passwd]);
+        // SQL 쿼리 준비 및 실행
+        $sql = "SELECT * FROM Customer WHERE cno = :cno AND passwd = :passwd";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['cno' => $cno, 'passwd' => $passwd]);
 
-    // 결과 확인
-    if ($stmt->rowCount() > 0) {
-        // 로그인 성공 시 세션에 정보 저장 및 TP_foods.php로 리디렉션
-        $_SESSION['user'] = $stmt->fetch();
-        header("Location: TP_Foods.php");
-        exit();
-    } else {
-        // 로그인 실패
-        $loginError = "로그인 실패! 회원 번호나 비밀번호를 확인해주세요.";
+        // 결과 확인
+        if ($stmt->rowCount() > 0) {
+            // 로그인 성공 시 세션에 정보 저장 및 TP_foods.php로 리디렉션
+            $_SESSION['user'] = $stmt->fetch();
+            header("Location: TP_Foods.php");
+            exit();
+        } else {
+            // 로그인 실패
+            $loginError = "로그인 실패! 회원 번호나 비밀번호를 확인해주세요.";
+        }
     }
-}
 ?>
 
 <!DOCTYPE html>

@@ -1,15 +1,16 @@
-<?php  // TP_Foods.php
+<?php
+    /* Foods 페이지 */
 
-session_start();  // 세션 시작
-include 'TP_pdo.php';  // PDO 설정 불러오기
+    session_start();  // 세션 시작
+    include 'TP_pdo.php';  // PDO 설정 불러오기
 
-// Food 테이블의 데이터를 조회
-$foods = [];
-if ($dbConnectionSuccess) {
-    $sql = "SELECT foodName, price FROM Food";
-    $stmt = $pdo->query($sql);
-    $foods = $stmt->fetchAll();
-}
+    // Food 테이블의 데이터를 조회
+    $foods = [];
+    if ($dbConnectionSuccess) {
+        $sql = "SELECT foodName, price FROM Food";
+        $stmt = $pdo->query($sql);
+        $foods = $stmt->fetchAll();
+    }
 ?>
 
 <!DOCTYPE html>
