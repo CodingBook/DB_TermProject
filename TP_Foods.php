@@ -110,17 +110,17 @@
 
         <!-- 검색 및 필터링 폼 -->
         <form method="GET" action="TP_Foods.php" class="mb-4">
-            <div class="row">
-                <div class="col">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
                     <input type="text" name="foodName" class="form-control" placeholder="음식 이름" value="<?php echo htmlspecialchars($foodName); ?>">
                 </div>
-                <div class="col">
+                <div class="col-md-2">
                     <input type="number" name="minPrice" class="form-control" placeholder="최소 가격" value="<?php echo htmlspecialchars($minPrice); ?>">
                 </div>
-                <div class="col">
+                <div class="col-md-2">
                     <input type="number" name="maxPrice" class="form-control" placeholder="최대 가격" value="<?php echo htmlspecialchars($maxPrice); ?>">
                 </div>
-                <div class="col">
+                <div class="col-md-2">
                     <select name="category" class="form-control">
                         <option value="">카테고리 선택</option>
                         <option value="과일" <?php echo $category == '과일' ? 'selected' : ''; ?>>과일</option>
@@ -128,11 +128,10 @@
                         <option value="일식" <?php echo $category == '일식' ? 'selected' : ''; ?>>일식</option>
                         <option value="서양식" <?php echo $category == '서양식' ? 'selected' : ''; ?>>서양식</option>
                         <option value="아시안식" <?php echo $category == '아시안식' ? 'selected' : ''; ?>>아시안식</option>
-                        <!-- 다른 카테고리 옵션들 -->
                     </select>
                 </div>
-                <div class="col">
-                    <button type="submit" class="btn btn-primary">검색</button>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">검색</button>
                 </div>
             </div>
         </form>

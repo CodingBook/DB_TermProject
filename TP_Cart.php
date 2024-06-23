@@ -149,7 +149,7 @@
                 </tbody>
             </table>
             <div class="mb-3">
-                <strong>총 가격: <?php echo htmlspecialchars(number_format($totalPrice)); ?>원</strong>
+                <strong style="font-size: 2.0em";>총 가격: <?php echo htmlspecialchars(number_format($totalPrice)); ?>원</strong>
             </div>
             <form method="POST">
                 <button type="submit" name="order" class="btn btn-success">결제</button>

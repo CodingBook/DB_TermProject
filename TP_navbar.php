@@ -24,7 +24,7 @@
                     </li>
                     <?php if (htmlspecialchars($_SESSION['user']['cno'] == "c0")): ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="TP_analytics.php" style="font-size: 1.5rem;">통계</a>
+                            <a class="nav-link" href="TP_Analytics.php" style="font-size: 1.5rem;">통계</a>
                         </li>
                     <?php endif; ?>
                 </ul>
