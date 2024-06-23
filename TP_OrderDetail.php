@@ -1,18 +1,24 @@
 <?php
-    session_start();
-    include 'TP_pdo.php';
+    /* 주문 기록 페이지 */
 
+    session_start();  // 세션 시작
+    include 'TP_pdo.php';  // PDO 설정 불러오기
+
+    // 사용자가 로그인된 상태인지 확인
     if (!isset($_SESSION['user']['cno'])) {
         header('Location: TP_Login.php');
         exit;
     }
 
+    // 사용자명 및 필터링 정보
     $cno = $_SESSION['user']['cno'];
 
     $startDate = isset($_GET['startDate']) ? $_GET['startDate'] : '';
     $endDate = isset($_GET['endDate']) ? $_GET['endDate'] : '';
 
     $orderHistory = [];
+
+    // 날짜를 기준으로 필터링해 SELECT
     if ($dbConnectionSuccess) {
         $sql = "SELECT c.id, c.orderDateTime, od.foodName, od.quantity, od.totalPrice
                 FROM Cart c
@@ -26,7 +32,7 @@
             $params['startDate'] = $startDate;
         }
 
-        if ($endDate) {
+        if ($endDate) {  // 종료 날짜 당일도 포함되도록 23:59:59 추가
             $endDate .= ' 23:59:59';
             $sql .= " AND c.orderDateTime <= :endDate";
             $params['endDate'] = $endDate;
@@ -56,11 +62,15 @@
 
 <body>
     <div>
+        <!-- 상단 구역 포함 -->
         <?php include 'TP_navbar.php'; ?>
     </div>
 
     <div class="container mt-5">
+
         <h2>주문 기록</h2>
+
+        <!-- 날짜 필터링 부분 -->
         <form method="get" class="mb-3">
             <div class="row">
                 <div class="col-md-3">
@@ -80,6 +90,7 @@
             </div>
         </form>
 
+        <!-- 주문 목록 출력 -->
         <?php if (empty($orderHistory)): ?>
             <div class="alert alert-info" role="alert">
                 주문 기록이 없습니다.

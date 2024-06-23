@@ -1,6 +1,8 @@
 <?php
-    session_start();
-    include 'TP_pdo.php';
+    /* 장바구니 페이지 */
+
+    session_start();  // 세션 시작
+    include 'TP_pdo.php';  // PDO 설정 불러오기
 
     // 사용자가 로그인된 상태인지 확인
     if (!isset($_SESSION['user']['cno'])) {
@@ -20,6 +22,7 @@
         $price = floatval($_POST['price']);
 
         // 장바구니에 동일한 항목이 있는지 확인
+        // 있으면 개수 증가
         $itemFound = false;
         foreach ($_SESSION['cart'] as $key => $item) {
             if ($item['foodName'] === $foodName) {
@@ -29,7 +32,7 @@
             }
         }
 
-        // 새로운 항목 추가
+        // 없으면 새로운 음식 추가
         if (!$itemFound) {
             $_SESSION['cart'][] = [
                 'foodName' => $foodName,
@@ -39,7 +42,7 @@
         }
     }
 
-    // 항목 제거 처리
+    // 장바구니에서 음식 제거 처리
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove'])) {
         $foodNameToRemove = $_POST['remove'];
         $_SESSION['cart'] = array_filter($_SESSION['cart'], function ($item) use ($foodNameToRemove) {
@@ -50,20 +53,22 @@
     // 결제 처리
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order'])) {
         if ($dbConnectionSuccess && isset($_SESSION['user']['cno'])) {
-            // Cart 기록 저장
-            $cno = $_SESSION['user']['cno'];
-            //$datetime = date('Y-m-d H:i:s');
 
-            $stmt = $pdo->query("SELECT MAX(id) AS max_id FROM Cart");
+            // 세션에서 cno 가져오기
+            $cno = $_SESSION['user']['cno'];
+
+            // 가장 최근 주문번호 가져와 현재 주문의 주문번호 생성
+            $stmt = $pdo->query("SELECT MAX(id) AS max_id FROM Cart");  
             $result = $stmt->fetch();
             $maxId = isset($result['max_id']) ? $result['max_id'] : 0;
             $id = str_pad($maxId + 1, 5, '0', STR_PAD_LEFT);
 
+            // Cart 테이블에 기록
             $sql = "INSERT INTO Cart (id, orderDateTime, cno) VALUES (:id, NOW(), :cno)";
             $stmt = $pdo->prepare($sql);
             $stmt->execute(['id' => $id, 'cno' => $cno]);
 
-            // 주문 세부 기록 저장
+            // 주문 세부 기록 OrderDetail 테이블에 저장
             foreach ($_SESSION['cart'] as $cartItem) {
                 $stmt = $pdo->query("SELECT MAX(itemNo) AS max_item_no FROM OrderDetail");
                 $result = $stmt->fetch();
@@ -80,6 +85,7 @@
                 ]);
             }
 
+            // 장바구니 비우기
             $_SESSION['cart'] = [];
             echo "<script>alert('주문이 완료되었습니다.');</script>";
         }
@@ -94,6 +100,7 @@
         $totalPrice += $item['price'] * $item['quantity'];
     }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="kr">
@@ -116,12 +123,14 @@
     </div>
 
     <div class="container mt-5">
+
         <h2>장바구니</h2>
         <?php if (empty($cartItems)): ?>
             <div class="alert alert-info" role="alert">
                 장바구니가 비어 있습니다.
             </div>
         <?php else: ?>
+            <!-- 장바구니 목록 테이블 -->
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -148,9 +157,13 @@
                     <?php endforeach; ?>
                 </tbody>
             </table>
+
+            <!-- 총 가격 표시 -->
             <div class="mb-3">
                 <strong style="font-size: 2.0em";>총 가격: <?php echo htmlspecialchars(number_format($totalPrice)); ?>원</strong>
             </div>
+
+            <!-- 결제 버튼 -->
             <form method="POST">
                 <button type="submit" name="order" class="btn btn-success">결제</button>
             </form>

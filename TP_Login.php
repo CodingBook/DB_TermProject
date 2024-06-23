@@ -28,8 +28,10 @@
     }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="kr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -40,6 +42,7 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
+
 <body>
     <div>
         <!-- 상단 구역 포함 -->

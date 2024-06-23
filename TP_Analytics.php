@@ -1,13 +1,16 @@
 <?php
-    session_start();
-    include 'TP_pdo.php';
+    /* 통계 페이지 */
 
-    if (!isset($_SESSION['user']['cno'])) {
-        header('Location: TP_Login.php');
+    session_start();  // 세션 시작
+    include 'TP_pdo.php';  // PDO 설정 불러오기
+
+    // 사용자가 관리자인지 확인
+    if ($_SESSION['user']['cno'] != 'c0') {
+        header('Location: TP_logout.php');
         exit;
     }
 
-    // Query 1: 카테고리별 통계
+    // Query 1: 카테고리별 가격 통계 (Group By, Roll UP)
     $sql1 = "SELECT
                 CASE
                     WHEN GROUPING(c.categoryName) = 1 THEN '종합'
@@ -20,7 +23,7 @@
     $stmt1 = $pdo->query($sql1);
     $categoryTotalPrice = $stmt1->fetchAll(PDO::FETCH_ASSOC);
 
-    // Query 2: 카테고리별 판매량
+    // Query 2: 카테고리별 판매 수량 (Group By, Roll UP)
     $sql2 = "SELECT ct.categoryName AS '카테고리', SUM(od.quantity) AS '판매개수'
             FROM Category ct
             JOIN Contain cn ON ct.categoryName = cn.categoryName
@@ -29,7 +32,7 @@
     $stmt2 = $pdo->query($sql2);
     $categoryTotalSold = $stmt2->fetchAll(PDO::FETCH_ASSOC);
 
-    // Query 3: 고객별 주문 총액
+    // Query 3: 고객별 주문 총액 (Group By)
     $sql3 = "SELECT c.cno, c.name, SUM(od.totalPrice) AS totalSpent
             FROM Customer c
             JOIN Cart ca ON c.cno = ca.cno
@@ -38,7 +41,7 @@
     $stmt3 = $pdo->query($sql3);
     $customerTotalSpent = $stmt3->fetchAll(PDO::FETCH_ASSOC);
 
-    // Query 4: 고객별 주문 순위
+    // Query 4: 카테고리별 주문 순위 (RANK)
     $sql4 = "SELECT
                 categoryName AS '카테고리',
                 totalSales AS '총 액수',
@@ -52,7 +55,7 @@
     $stmt4 = $pdo->query($sql4);
     $customerOrderRank = $stmt4->fetchAll(PDO::FETCH_ASSOC);
 
-    // Query 4: 음식별 누적 판매량
+    // Query 5: 카테고리별 최고 판매량 (SUM, MAX)
     $sql5 = "SELECT
                 categoryName AS 카테고리,
                 sumInCategory AS 카테고리_내_총합,
@@ -67,8 +70,8 @@
             GROUP BY categoryName, sumInCategory, maxInCategory;";
     $stmt5 = $pdo->query($sql5);
     $foodCumulativeQuantity = $stmt5->fetchAll(PDO::FETCH_ASSOC);
-
 ?>
+
 
 <!DOCTYPE html>
 <html lang="kr">
@@ -86,11 +89,13 @@
 
 <body>
     <div>
+        <!-- 상단 구역 포함 -->
         <?php include 'TP_navbar.php'; ?>
     </div>
 
+    <!-- Query 1 -->
     <div class="container mt-5">
-    <h3>카테고리별 통계</h3>
+        <h3>카테고리별 가격 통계</h3>
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -101,14 +106,17 @@
             <tbody>
                 <?php foreach ($categoryTotalPrice as $row): ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($row['카테고리'] ?? '알 수 없음'); ?></td>
-                        <td><?php echo number_format($row['가격 합산'] ?? 0); ?>원</td>
+                        <td><?php echo htmlspecialchars($row['카테고리']); ?></td>
+                        <td><?php echo number_format($row['가격 합산']); ?>원</td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
+    </div>
 
-        <h3>카테고리별 판매량</h3>
+    <!-- Query 2 -->
+    <div class="container mt-5">
+        <h3>카테고리별 판매 수량</h3>
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -125,7 +133,10 @@
                 <?php endforeach; ?>
             </tbody>
         </table>
+    </div>
 
+    <!-- Query 3 -->
+    <div class="container mt-5">
         <h3>고객별 주문 총액</h3>
         <table class="table table-bordered">
             <thead>
@@ -145,8 +156,11 @@
                 <?php endforeach; ?>
             </tbody>
         </table>
+    </div>
 
-        <h3>고객별 주문 순위</h3>
+    <!-- Query 4 -->
+    <div class="container mt-5">
+        <h3>카테고리별 주문 순위</h3>
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -165,8 +179,11 @@
                 <?php endforeach; ?>
             </tbody>
         </table>
+    </div>
 
-        <h3>음식별 누적 판매량</h3>
+    <!-- Query 4 -->
+    <div class="container mt-5">
+        <h3>카테고리별 최고 판매량</h3>
         <table class="table table-bordered">
             <thead>
                 <tr>

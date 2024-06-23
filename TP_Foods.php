@@ -1,8 +1,14 @@
 <?php
-    /* Foods 페이지 */
+    /* 음식 페이지 */
 
     session_start();  // 세션 시작
     include 'TP_pdo.php';  // PDO 설정 불러오기
+
+    // 사용자가 로그인된 상태인지 확인
+    if (!isset($_SESSION['user']['cno'])) {
+        header('Location: TP_Login.php');
+        exit;
+    }
 
     // 검색 및 필터링 처리
     $foodName = isset($_GET['foodName']) ? $_GET['foodName'] : '';
@@ -42,7 +48,7 @@
     $foodNames = array_column($filteredFoods, 'foodName');
     $foodNamesPlaceholder = implode(',', array_fill(0, count($foodNames), '?'));
 
-    // 기본 SQL 쿼리 (2단계)
+    // 기본 SQL 쿼리 (2단계, 카테고리가 여러개 속한 음식을 한 튜플로 처리)
     $sql2 = "SELECT f.foodName, f.price, GROUP_CONCAT(c.categoryName SEPARATOR ', ') AS categories
              FROM Food f
              JOIN Contain ct ON f.foodName = ct.foodName
@@ -106,6 +112,7 @@
     </div>
 
     <div class="container mt-5">
+        
         <h2>음식 목록</h2>
 
         <!-- 검색 및 필터링 폼 -->
@@ -141,6 +148,7 @@
                 <?php echo $dbConnectionError; ?>
             </div>
         <?php else: ?>
+            <!-- 음식 목록 테이블 -->
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -152,6 +160,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- 반복문으로 나열 -->
                     <?php foreach ($foods as $food): ?>
                         <tr>
                             <td><?php echo htmlspecialchars($food['categories']); ?></td>
