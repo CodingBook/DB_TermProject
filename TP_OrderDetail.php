@@ -11,11 +11,11 @@
 
     $orderHistory = [];
     if ($dbConnectionSuccess) {
-        $sql = "SELECT c.id, c.datetime, od.foodName, od.quantity, od.totalPrice
+        $sql = "SELECT c.id, c.orderDateTime, od.foodName, od.quantity, od.totalPrice
                 FROM Cart c
                 JOIN OrderDetail od ON c.id = od.id
                 WHERE c.cno = :cno
-                ORDER BY c.datetime DESC";
+                ORDER BY c.orderDateTime DESC";
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['cno' => $cno]);
         $orderHistory = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
@@ -52,7 +52,7 @@
             <?php foreach ($orderHistory as $orderID => $details): ?>
                 <div class="card mb-3">
                     <div class="card-header">
-                        주문 ID: <?php echo htmlspecialchars($orderID); ?> | 주문 날짜: <?php echo htmlspecialchars($details[0]['datetime']); ?>
+                        주문 ID: <?php echo htmlspecialchars($orderID); ?> | 주문 날짜: <?php echo htmlspecialchars($details[0]['orderDateTime']); ?>
                     </div>
                     <div class="card-body">
                         <table class="table table-bordered">
