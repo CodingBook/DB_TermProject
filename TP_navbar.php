@@ -14,17 +14,17 @@
                         <a class="nav-link" href="TP_Foods.php" style="font-size: 1.5rem;">음식</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="TP_cart.php" style="font-size: 1.5rem;">장바구니</a>
+                        <a class="nav-link" href="TP_Cart.php" style="font-size: 1.5rem;">장바구니</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="TP_order_history.php" style="font-size: 1.5rem;">주문 기록</a>
+                        <a class="nav-link" href="TP_OrderDetail.php" style="font-size: 1.5rem;">주문 기록</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="TP_logout.php" style="font-size: 1.5rem;">로그아웃</a>
                     </li>
                     <?php if (htmlspecialchars($_SESSION['user']['cno'] == "c0")): ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="TP_logout.php" style="font-size: 1.5rem;">통계</a>
+                            <a class="nav-link" href="TP_analytics.php" style="font-size: 1.5rem;">통계</a>
                         </li>
                     <?php endif; ?>
                 </ul>
