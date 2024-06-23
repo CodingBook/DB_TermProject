@@ -181,7 +181,7 @@
         </table>
     </div>
 
-    <!-- Query 4 -->
+    <!-- Query 5 -->
     <div class="container mt-5">
         <h3>카테고리별 최고 판매량</h3>
         <table class="table table-bordered">

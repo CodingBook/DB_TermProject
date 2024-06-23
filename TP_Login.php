@@ -10,7 +10,7 @@
         $cno = $_POST['cno'];
         $passwd = $_POST['passwd'];
 
-        // SQL 쿼리 준비 및 실행
+        // Customer 테이블에서 조회 시도
         $sql = "SELECT * FROM Customer WHERE cno = :cno AND passwd = :passwd";
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['cno' => $cno, 'passwd' => $passwd]);
@@ -52,18 +52,22 @@
     <!-- 로그인 구역 -->
     <div class="container mt-5">
         <h2>로그인</h2>
+
+        <!-- db 연결 확인 -->
         <?php if (!$dbConnectionSuccess): ?>
             <div class="alert alert-danger" role="alert">
                 <?php echo $dbConnectionError; ?>
             </div>
         <?php endif; ?>
         
+        <!-- 로그인 에러 정보 확인 -->
         <?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($loginError)): ?>
             <div class="alert alert-danger" role="alert">
                 <?php echo $loginError; ?>
             </div>
         <?php endif; ?>
-
+        
+        <!-- 로그인 정보 입력 -->
         <form action="TP_login.php" method="post">
             <div class="mb-3">
                 <label for="cno" class="form-label">회원 번호</label>
